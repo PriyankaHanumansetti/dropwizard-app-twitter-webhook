@@ -30,13 +30,6 @@
 </dependencyManagement>
 
 <dependencies>
-    <!--CI dependencies-->
-    <dependency>
-        <groupId>com.oracle.ci</groupId>
-        <artifactId>canonical-core</artifactId>
-        <version>[13,14)</version>
-    </dependency>
-
     <!--Dropwizard dependencies-->
     <dependency>
         <groupId>io.dropwizard</groupId>
