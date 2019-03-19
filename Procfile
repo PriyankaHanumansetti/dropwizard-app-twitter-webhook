@@ -1,0 +1,1 @@
+web: java -jar target/twitter-webhook.jar server src/test/resources/local.yml
