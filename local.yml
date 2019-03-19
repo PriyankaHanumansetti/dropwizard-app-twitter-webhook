@@ -1,5 +1,5 @@
 server:
-  applicationContextPath: /webhooks
+  applicationContextPath: /
   applicationConnectors:
     - type: http
       port: 9090
