@@ -41,12 +41,6 @@
         <artifactId>dropwizard-client</artifactId>
         <version>${dropwizard.version}</version>
     </dependency>
-    <dependency>
-        <groupId>com.oracle.ci</groupId>
-        <artifactId>dropwizard_support</artifactId>
-        <version>[6,7)</version>
-    </dependency>
-
     <!--Third party dependencies-->
     <dependency>
         <groupId>com.google.inject</groupId>
