@@ -70,17 +70,15 @@ public class WebhookResource {
     @Produces("application/json")
     public Response getEvents() {
         Response finalResponse;
-        List<String> events = new ArrayList<>();
-        String event;
-        do {
-            event = queue.peek();
-            if (event != null) {
-                events.add(event);
-            }
-        } while(event != null);
+        String event = queue.peek();
+        if (event != null) {
+            return Response.ok().entity(Entity.json(event)).build();
+        } else {
+            return Response.noContent().build();
+        }
 
-        return Response.ok().entity(Entity.json(events)).build();
     }
+
 
     protected String getEncodedString(final byte[] signBytes) {
         return Base64.getEncoder().encodeToString(signBytes);
