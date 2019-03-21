@@ -1,8 +1,8 @@
 # dropwizard-app-twitter-webhook
 
-This is a dropwizard application which has apis which I am using to create a twitter webhook and use it to receive webhook events via this api.
+This is a dropwizard application which has APIs which I am using to create a twitter webhook and use it to receive webhook events via this API.
 
-I have deployed this api in heroku to get a public vip address of the webhook.
+I have deployed this API in heroku.
 
 Corresponding heroku app - https://dashboard.heroku.com/apps/webhooks-twitter
 
