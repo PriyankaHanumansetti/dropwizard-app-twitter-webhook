@@ -4,15 +4,18 @@ import com.sample.webhook.RequestAuthenticationUtil;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.ws.rs.*;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
+import java.util.*;
 
 @Path("/twitter")
 public class WebhookResource {
+    
+    static Queue<String> queue = new LinkedList<String>();
 
     @GET
     @Path("/hi")
@@ -59,6 +62,23 @@ public class WebhookResource {
             finalResponse = Response.status(Response.Status.BAD_REQUEST).build();
         }
         return finalResponse;
+    }
+    
+    @GET
+    @Path("/events")
+    @Produces("application/json")
+    public Response getEvents() {
+        Response finalResponse;
+        List<String> events = new ArrayList<>();
+        String event;
+        do {
+            event = queue.peek();
+            if (event != null) {
+                events.add(event);
+            }
+        } while(event != null);
+
+        return Response.ok().entity(Entity.json(events)).build();
     }
 
     protected String getEncodedString(final byte[] signBytes) {
