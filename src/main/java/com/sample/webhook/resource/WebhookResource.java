@@ -72,6 +72,7 @@ public class WebhookResource {
         Response finalResponse;
         String event = queue.peek();
         if (event != null) {
+            queue.remove();
             return Response.ok().entity(Entity.json(event)).build();
         } else {
             return Response.noContent().build();
