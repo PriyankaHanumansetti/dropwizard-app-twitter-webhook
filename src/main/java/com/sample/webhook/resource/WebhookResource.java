@@ -40,6 +40,7 @@ public class WebhookResource {
         Response response;
         try {
             System.out.println("Event body : " + eventBody);
+            queue.add(eventBody);
             response = Response.ok().build();
 
         } catch (Exception e) {
