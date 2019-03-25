@@ -1,13 +1,9 @@
 package com.sample.webhook.resource;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationConfig;
 import com.sample.webhook.RequestAuthenticationUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.eclipse.jetty.http.HttpHeader;
 
 import javax.ws.rs.*;
 import javax.ws.rs.client.Entity;
@@ -22,7 +18,35 @@ import java.util.*;
 @Path("/twitter")
 public class WebhookResource {
 
-    static Queue<Pair<String, MultivaluedMap<String, String>>> queue = new LinkedList<>();
+    class Event {
+        private String body;
+        private MultivaluedMap<String, String> headers;
+
+        Event() {};
+
+        Event(String body, MultivaluedMap<String, String> headers) {
+            this.body = body;
+            this.headers = headers;
+        }
+
+        public String getBody() {
+            return body;
+        }
+
+        public void setBody(String body) {
+            this.body = body;
+        }
+
+        public MultivaluedMap<String, String> getHeaders() {
+            return headers;
+        }
+
+        public void setHeaders(MultivaluedMap<String, String> headers) {
+            this.headers = headers;
+        }
+    }
+
+    static Queue<Event> queue = new LinkedList<>();
 
     @GET
     @Path("/hi")
@@ -47,7 +71,7 @@ public class WebhookResource {
         Response response;
         try {
             System.out.println("Event body : " + eventBody);
-            queue.add(Pair.of(eventBody, requestHeaders.getRequestHeaders()));
+            queue.add(new Event(eventBody, requestHeaders.getRequestHeaders()));
             response = Response.ok().build();
 
         } catch (Exception e) {
@@ -77,7 +101,7 @@ public class WebhookResource {
     @Produces("application/json")
     public Response getEvents() throws JsonProcessingException {
         Response finalResponse;
-        Pair event = queue.peek();
+        Event event = queue.peek();
         if (event != null) {
             return Response.ok().entity(Entity.json(event)).build();
         } else {
