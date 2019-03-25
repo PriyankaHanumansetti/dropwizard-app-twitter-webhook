@@ -1,5 +1,8 @@
 package com.sample.webhook.resource;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationConfig;
 import com.sample.webhook.RequestAuthenticationUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -73,7 +76,9 @@ public class WebhookResource {
         Response finalResponse;
         Pair<String, HttpHeaders> event = queue.peek();
         if (event != null) {
-            return Response.ok().entity(Entity.json(event)).build();
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            return Response.ok().entity(Entity.json(event, )).build();
         } else {
             return Response.noContent().build();
         }
