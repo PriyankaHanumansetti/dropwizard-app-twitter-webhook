@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sample.webhook.RequestAuthenticationUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.json.simple.JSONObject;
 
 import javax.ws.rs.*;
 import javax.ws.rs.client.Entity;
@@ -19,21 +20,21 @@ import java.util.*;
 public class WebhookResource {
 
     class Event {
-        private String body;
+        private JSONObject body;
         private MultivaluedMap<String, String> headers;
 
         Event() {};
 
-        Event(String body, MultivaluedMap<String, String> headers) {
+        Event(JSONObject body, MultivaluedMap<String, String> headers) {
             this.body = body;
             this.headers = headers;
         }
 
-        public String getBody() {
+        public JSONObject getBody() {
             return body;
         }
 
-        public void setBody(String body) {
+        public void setBody(JSONObject body) {
             this.body = body;
         }
 
@@ -62,9 +63,9 @@ public class WebhookResource {
      * @return Response if valid or bad request
      */
     @POST
-    public Response hook(@Context HttpHeaders requestHeaders, String eventBody) {
+    public Response hook(@Context HttpHeaders requestHeaders, JSONObject eventBody) {
 
-        if (StringUtils.isEmpty(eventBody)) {
+        if (StringUtils.isEmpty(eventBody.toJSONString())) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
