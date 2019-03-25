@@ -1,8 +1,8 @@
 package com.sample.webhook.resource;
 
 import com.sample.webhook.RequestAuthenticationUtil;
-import javafx.util.Pair;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.ws.rs.*;
 import javax.ws.rs.client.Entity;
@@ -41,7 +41,7 @@ public class WebhookResource {
         Response response;
         try {
             System.out.println("Event body : " + eventBody);
-            queue.add(new Pair<String, HttpHeaders>(eventBody, requestHeaders));
+            queue.add(Pair.of(eventBody, requestHeaders));
             response = Response.ok().build();
 
         } catch (Exception e) {
