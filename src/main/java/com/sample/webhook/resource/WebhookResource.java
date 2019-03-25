@@ -7,11 +7,13 @@ import com.fasterxml.jackson.databind.SerializationConfig;
 import com.sample.webhook.RequestAuthenticationUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.eclipse.jetty.http.HttpHeader;
 
 import javax.ws.rs.*;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -20,7 +22,7 @@ import java.util.*;
 @Path("/twitter")
 public class WebhookResource {
 
-    static Queue<Pair<String, HttpHeaders>> queue = new LinkedList<>();
+    static Queue<Pair<String, MultivaluedMap<String, String>>> queue = new LinkedList<>();
 
     @GET
     @Path("/hi")
@@ -45,7 +47,7 @@ public class WebhookResource {
         Response response;
         try {
             System.out.println("Event body : " + eventBody);
-            queue.add(Pair.of(eventBody, requestHeaders));
+            queue.add(Pair.of(eventBody, requestHeaders.getRequestHeaders()));
             response = Response.ok().build();
 
         } catch (Exception e) {
@@ -75,11 +77,9 @@ public class WebhookResource {
     @Produces("application/json")
     public Response getEvents() throws JsonProcessingException {
         Response finalResponse;
-        Pair<String, HttpHeaders> event = queue.peek();
+        Pair event = queue.peek();
         if (event != null) {
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            return Response.ok().entity(Entity.json(objectMapper.writeValueAsString(event))).build();
+            return Response.ok().entity(Entity.json(event)).build();
         } else {
             return Response.noContent().build();
         }
