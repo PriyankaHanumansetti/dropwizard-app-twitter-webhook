@@ -1,5 +1,6 @@
 package com.sample.webhook.resource;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationConfig;
@@ -72,13 +73,13 @@ public class WebhookResource {
     @GET
     @Path("/events")
     @Produces("application/json")
-    public Response getEvents() {
+    public Response getEvents() throws JsonProcessingException {
         Response finalResponse;
         Pair<String, HttpHeaders> event = queue.peek();
         if (event != null) {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            return Response.ok().entity(Entity.json(event, )).build();
+            return Response.ok().entity(Entity.json(objectMapper.writeValueAsString(event))).build();
         } else {
             return Response.noContent().build();
         }
