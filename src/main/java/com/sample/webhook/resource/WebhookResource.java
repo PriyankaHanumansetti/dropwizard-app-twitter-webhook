@@ -1,10 +1,10 @@
 package com.sample.webhook.resource;
 
+import com.fasterxml.jackson.annotation.JsonRawValue;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sample.webhook.RequestAuthenticationUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.json.simple.JSONObject;
 
 import javax.ws.rs.*;
 import javax.ws.rs.client.Entity;
@@ -19,22 +19,24 @@ import java.util.*;
 @Path("/twitter")
 public class WebhookResource {
 
+
     class Event {
-        private JSONObject body;
+        @JsonRawValue
+        private String body;
         private MultivaluedMap<String, String> headers;
 
         Event() {};
 
-        Event(JSONObject body, MultivaluedMap<String, String> headers) {
+        Event(String body, MultivaluedMap<String, String> headers) {
             this.body = body;
             this.headers = headers;
         }
 
-        public JSONObject getBody() {
+        public String getBody() {
             return body;
         }
 
-        public void setBody(JSONObject body) {
+        public void setBody(String body) {
             this.body = body;
         }
 
@@ -63,9 +65,9 @@ public class WebhookResource {
      * @return Response if valid or bad request
      */
     @POST
-    public Response hook(@Context HttpHeaders requestHeaders, JSONObject eventBody) {
+    public Response hook(@Context HttpHeaders requestHeaders, String eventBody) {
 
-        if (StringUtils.isEmpty(eventBody.toJSONString())) {
+        if (StringUtils.isEmpty(eventBody)) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
