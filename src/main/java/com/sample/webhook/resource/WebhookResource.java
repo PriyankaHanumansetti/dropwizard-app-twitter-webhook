@@ -1,6 +1,7 @@
 package com.sample.webhook.resource;
 
 import com.sample.webhook.RequestAuthenticationUtil;
+import javafx.util.Pair;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.ws.rs.*;
@@ -14,8 +15,8 @@ import java.util.*;
 
 @Path("/twitter")
 public class WebhookResource {
-    
-    static Queue<String> queue = new LinkedList<String>();
+
+    static Queue<Pair<String, HttpHeaders>> queue = new LinkedList<>();
 
     @GET
     @Path("/hi")
@@ -40,7 +41,7 @@ public class WebhookResource {
         Response response;
         try {
             System.out.println("Event body : " + eventBody);
-            queue.add(eventBody);
+            queue.add(new Pair<String, HttpHeaders>(eventBody, requestHeaders));
             response = Response.ok().build();
 
         } catch (Exception e) {
@@ -64,22 +65,19 @@ public class WebhookResource {
         }
         return finalResponse;
     }
-    
+
     @GET
     @Path("/events")
     @Produces("application/json")
     public Response getEvents() {
         Response finalResponse;
-        String event = queue.peek();
+        Pair<String, HttpHeaders> event = queue.peek();
         if (event != null) {
-            queue.remove();
             return Response.ok().entity(Entity.json(event)).build();
         } else {
             return Response.noContent().build();
         }
-
     }
-
 
     protected String getEncodedString(final byte[] signBytes) {
         return Base64.getEncoder().encodeToString(signBytes);
