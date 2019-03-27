@@ -109,9 +109,9 @@ public class WebhookResource {
         if (event != null) {
             queue.remove();
             Response response = Response.ok().entity(Entity.json(event.getBody())).build();
-        for (Entry<String, List<String>> entry : event.getHeaders().entrySet()) {
+        /*for (Entry<String, List<String>> entry : event.getHeaders().entrySet()) {
                 response.getHeaders().add(entry.getKey(), entry.getValue());
-            }
+            }*/
             return response;
         } else {
             return Response.noContent().build();
