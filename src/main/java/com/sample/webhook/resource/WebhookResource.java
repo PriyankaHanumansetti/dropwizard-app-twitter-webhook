@@ -15,6 +15,7 @@ import javax.ws.rs.core.Response;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
+import java.util.Map.Entry;
 
 @Path("/twitter")
 public class WebhookResource {
@@ -101,13 +102,16 @@ public class WebhookResource {
 
     @GET
     @Path("/events")
-    @Produces("application/json")
     public Response getEvents() throws JsonProcessingException {
         Response finalResponse;
         Event event = queue.peek();
         if (event != null) {
             queue.remove();
-            return Response.ok().entity(Entity.json(event)).build();
+            Response response = Response.ok().entity(Entity.json(event.getBody())).build();
+        for (Entry<String, List<String>> entry : event.getHeaders().entrySet()) {
+                response.getHeaders().add(entry.getKey(), entry.getValue());
+            }
+            return response;
         } else {
             return Response.noContent().build();
         }
