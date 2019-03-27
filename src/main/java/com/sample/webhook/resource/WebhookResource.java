@@ -110,7 +110,7 @@ public class WebhookResource {
             queue.remove();
             Response response = Response.ok().entity(event.getBody())
                     .header("X-Twitter-Webhooks-Signature", event.getHeaders().get("X-Twitter-Webhooks-Signature"))
-                    .header("Content-Type", event.getHeaders().get("Content-Type")).build();
+                    .build();
         /*for (Entry<String, List<String>> entry : event.getHeaders().entrySet()) {
                 response.getHeaders().add(entry.getKey(), entry.getValue());
             }*/
